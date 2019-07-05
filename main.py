@@ -1,8 +1,3 @@
-"""
- Classical Bernoulli bandits problem. 
- Date: 2019-06-28
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import Game
@@ -21,7 +16,7 @@ def run_one_simulation(algo):
 
     # Set up model parameters
     K = 10  # number of arms
-    T = 2000 # time horizon
+    T = 20000 # time horizon
     # algo = "Thompson Sampling"  # the algorithm used for selecting an action
     
     # initialize an instance of the game system
@@ -80,12 +75,12 @@ if __name__ == "__main__":
     
     algo1 = "Thompson Sampling"
     algo2 = "UCB"
-    s1 = run_simulations(200, algo1)
-    s2 = run_simulations(200, algo2) 
+    #s1 = run_simulations(200, algo1)
+    s2 = run_simulations(10, algo2) 
     
-    T = len(s1)
+    T = len(s2)
     plt.figure(1)
-    plt.plot(range(T), s1, 'r', label = algo1)
+    #plt.plot(range(T), s1, 'r', label = algo1)
     plt.plot(range(T), s2, 'b', label = algo2)
     plt.legend()
     plt.grid()
@@ -97,5 +92,5 @@ if __name__ == "__main__":
     #plt.title('regret = 0 if chosen arm = best arm, otherwise = 1')
     #plt.xlim(0, T*1.1)
     #plt.ylim(0, T*1.1)
-    plt.savefig('figs/TS_vs_UCB.png')
+    #plt.savefig('figs/TS_vs_UCB.png')
     plt.show()        
