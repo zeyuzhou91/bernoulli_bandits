@@ -2,6 +2,7 @@ import numpy as np
 import scipy as sp
 import scipy.stats as st
 import Thompson_Sampling as TS
+import UCB as ucb
 import Optimization as opt
 
 
@@ -26,6 +27,8 @@ class System:
         # The state variables
         if algo == "Thompson Sampling":
             self.state = TS.State(K)
+        elif algo == "UCB":
+            self.state = ucb.State(K)
         else:
             pass
         
@@ -45,10 +48,12 @@ class System:
           t:    the round index, 0 <= t <= T-1.
         """
         
+        a = int(self.A[t])
+        obs = self.OBS[t]        
         if self.algo == "Thompson Sampling":
-            a = int(self.A[t])
-            obs = self.OBS[t]
             self.state.update(a, obs)
+        elif self.algo == "UCB":
+            self.state.update(a, obs, t)
         else:
             pass
         
@@ -136,6 +141,8 @@ def select_action(Gsys):
     
     if Gsys.algo == "Thompson Sampling":
         a = TS.select_action(Gsys)
+    elif Gsys.algo == "UCB":
+        a = ucb.select_action(Gsys)
     else:
         pass
     

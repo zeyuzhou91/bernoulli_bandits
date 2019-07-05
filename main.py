@@ -11,7 +11,7 @@ import Performance_Evaluation as PerfEval
 
 np.set_printoptions(precision=4)
 
-def run_one_simulation():
+def run_one_simulation(algo):
     """
     Run one simulation.     
        
@@ -21,11 +21,11 @@ def run_one_simulation():
 
     # Set up model parameters
     K = 10  # number of arms
-    T = 500 # time horizon
-    algorithm = "Thompson Sampling"  # the algorithm used for selecting an action
+    T = 2000 # time horizon
+    # algo = "Thompson Sampling"  # the algorithm used for selecting an action
     
     # initialize an instance of the game system
-    Gsys = Game.System(K, T, algorithm)
+    Gsys = Game.System(K, T, algo)
     
     Gsys.theta_true = Game.generate_true_parameters(Gsys)
     #print('theta_true', Gsys.theta_true)
@@ -40,6 +40,7 @@ def run_one_simulation():
         
         # select an action
         a = Game.select_action(Gsys)
+        # print('Action:', a)
   
         # Obtain observation, record/calculate the reward and regret  
         (obs, rew, reg) = Game.play(Gsys, a)
@@ -63,13 +64,13 @@ def run_one_simulation():
     return scores
 
 
-def run_simulations(num_simul):
+def run_simulations(num_simul, algo):
     for i in range(num_simul):
         print('simulation', i)
         if i == 0:
-            p = run_one_simulation()    # accumulative
+            p = run_one_simulation(algo)    # accumulative
         else:
-            s = run_one_simulation()
+            s = run_one_simulation(algo)
             p += s
     p = p / float(num_simul)
     return p    
@@ -77,20 +78,24 @@ def run_simulations(num_simul):
 
 if __name__ == "__main__":
     
-    s = run_simulations(100) 
+    algo1 = "Thompson Sampling"
+    algo2 = "UCB"
+    s1 = run_simulations(200, algo1)
+    s2 = run_simulations(200, algo2) 
     
-    T = len(s)
+    T = len(s1)
     plt.figure(1)
-    plt.plot(range(T), s)
-    # plt.legend()
+    plt.plot(range(T), s1, 'r', label = algo1)
+    plt.plot(range(T), s2, 'b', label = algo2)
+    plt.legend()
     plt.grid()
     plt.xlabel('t')
     plt.ylabel('cumulative regret')
     #plt.ylabel('running average regret')
     #plt.ylabel('chance of selecting the best arm')
-    plt.title('regret = expected reward of best arm - expected reward of chosen arm')
+    #plt.title('regret = expected reward of best arm - expected reward of chosen arm')
     #plt.title('regret = 0 if chosen arm = best arm, otherwise = 1')
     #plt.xlim(0, T*1.1)
     #plt.ylim(0, T*1.1)
-    #plt.savefig('figs/cumulative_regret.png')
+    plt.savefig('figs/TS_vs_UCB.png')
     plt.show()        
