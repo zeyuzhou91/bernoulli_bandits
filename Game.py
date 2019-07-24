@@ -2,24 +2,28 @@ import numpy as np
 import scipy as sp
 import scipy.stats as st
 import Thompson_Sampling as TS
+import Particle_Filter as PF
 import UCB as ucb
-import Optimization as opt
+import auxiliary as aux
 
 
 class System:
-    def __init__(self, K, T, algo):
+    def __init__(self, K, T, Npar, algo):
         
         # number of arms
         self.K = K  
         
         # time horizon
-        self.T = T       
+        self.T = T  
+        
+        # number of particles 
+        self.Npar = Npar        
         
         # algorithm
         self.algo = algo
         
         # The true theta vector of length K
-        self.theta_true = np.zeros(K) 
+        self.theta_true = np.zeros(K)        
         
         # The best action
         self.best_action = 0  
@@ -29,6 +33,8 @@ class System:
             self.state = TS.State(K)
         elif algo == "UCB":
             self.state = ucb.State(K)
+        elif algo == "Particle Filter":
+            self.state = PF.State(K, Npar)
         else:
             pass
         
@@ -54,6 +60,8 @@ class System:
             self.state.update(a, obs)
         elif self.algo == "UCB":
             self.state.update(a, obs, t)
+        elif self.algo == "Particle Filter":
+            self.state.update(a, obs)
         else:
             pass
         
@@ -106,7 +114,12 @@ def generate_true_parameters(Gsys):
       theta:  a vector of values in [0,1].
     """    
     
+    # Method 1: generate random values
     theta = np.random.uniform(0, 1, Gsys.K) 
+    
+    
+    ## Method 2: use pre-determined values (for test cases)
+    ## TO DO:
     
     return theta
 
@@ -123,7 +136,7 @@ def find_best_action(Gsys):
       action:  an integer in [K]
     """
     
-    action = opt.argmax_of_array(Gsys.theta_true)
+    action = aux.argmax_of_array(Gsys.theta_true)
     
     return action
 
@@ -143,6 +156,8 @@ def select_action(Gsys):
         a = TS.select_action(Gsys)
     elif Gsys.algo == "UCB":
         a = ucb.select_action(Gsys)
+    elif Gsys.algo == "Particle Filter":
+        a = PF.select_action(Gsys)
     else:
         pass
     

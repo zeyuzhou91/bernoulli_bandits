@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import Game
-##import Particle_Filter as ParFil
 import Performance_Evaluation as PerfEval
 
 np.set_printoptions(precision=4)
@@ -15,12 +14,12 @@ def run_one_simulation(algo):
     """
 
     # Set up model parameters
-    K = 10  # number of arms
-    T = 20000 # time horizon
-    # algo = "Thompson Sampling"  # the algorithm used for selecting an action
+    K = 3    # number of arms
+    T = 100  # time horizon
+    Npar = 100 # number of particles  
     
     # initialize an instance of the game system
-    Gsys = Game.System(K, T, algo)
+    Gsys = Game.System(K, T, Npar, algo)
     
     Gsys.theta_true = Game.generate_true_parameters(Gsys)
     #print('theta_true', Gsys.theta_true)
@@ -43,7 +42,7 @@ def run_one_simulation(algo):
         #print('reward:', rew)
         #print('regret:', reg)
         
-        # Update history 
+        # Update history
         Gsys.update_history(a, obs, rew, reg, t)
         # print('Gsys.X:', Gsys.X[:(t+1)]) 
         # print('Gsys.A:', Gsys.A[:(t+1)]) 
@@ -75,13 +74,16 @@ if __name__ == "__main__":
     
     algo1 = "Thompson Sampling"
     algo2 = "UCB"
-    #s1 = run_simulations(200, algo1)
-    s2 = run_simulations(10, algo2) 
+    algo3 = "Particle Filter"
+    #s1 = run_simulations(10, algo1)
+    #s2 = run_simulations(10, algo2) 
+    s3 = run_simulations(100, algo3)
     
-    T = len(s2)
+    T = len(s3)
     plt.figure(1)
     #plt.plot(range(T), s1, 'r', label = algo1)
-    plt.plot(range(T), s2, 'b', label = algo2)
+    #plt.plot(range(T), s2, 'b', label = algo2)
+    plt.plot(range(T), s3, 'g', label = algo3)
     plt.legend()
     plt.grid()
     plt.xlabel('t')

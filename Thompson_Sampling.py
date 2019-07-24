@@ -1,7 +1,7 @@
 import numpy as np
 import scipy as sp
 import scipy.stats as st
-import Optimization as opt
+import auxiliary as aux
 
 
 class State:
@@ -50,7 +50,7 @@ def select_action(Gsys):
     theta_hat = generate_parameter_sample(Gsys)
     #print('theta_hat:', theta_hat)
     
-    a = opt.argmax_of_array(theta_hat) 
+    a = aux.argmax_of_array(theta_hat) 
     #print('Actual Action:', a)
     
     return a

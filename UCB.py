@@ -1,5 +1,5 @@
 import numpy as np
-import Optimization as opt
+import auxiliary as aux
 
 class State:
     def __init__(self, K):
@@ -51,6 +51,6 @@ def select_action(Gsys):
       a:   an action/arm, an integer in [K]. 
     """
     
-    a = opt.argmax_of_array(Gsys.state.I) 
+    a = aux.argmax_of_array(Gsys.state.I) 
     
     return a
